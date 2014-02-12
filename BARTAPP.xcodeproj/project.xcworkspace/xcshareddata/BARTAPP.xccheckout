@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>BA6C857F-D6F1-4BE4-8315-247B389C21B2</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BARTAPP</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>8FEFDAC2-D60B-4BFF-8074-F5F562070513</key>
+		<string>https://github.com/IceAgeQQ/SanFransicoBartAPP.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BARTAPP.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>8FEFDAC2-D60B-4BFF-8074-F5F562070513</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/IceAgeQQ/SanFransicoBartAPP.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>8FEFDAC2-D60B-4BFF-8074-F5F562070513</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>8FEFDAC2-D60B-4BFF-8074-F5F562070513</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BARTAPP</string>
+		</dict>
+	</array>
+</dict>
+</plist>
