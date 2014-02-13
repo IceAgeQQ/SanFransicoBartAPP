@@ -12,13 +12,17 @@
 #import "StationListCell.h"
 
 
-@interface StationInformationViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface StationInformationViewController ()<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>{
+    NSMutableArray *stationListArray;
+    NSMutableArray *stationTempArray;
+}
 @property (nonatomic)NSMutableArray *stationListArray;
+@property (nonatomic      ) NSMutableArray *stationTempArray;
 @property (weak, nonatomic) IBOutlet UITableView *stationTableview;
 @end
 
 @implementation StationInformationViewController
-
+@synthesize stationListArray,stationTempArray;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -37,6 +41,9 @@
 //    [self.stationTableview ];
     self.stationTableview.frame = CGRectMake(0,IS_GREATER_IOS_7?64:44,320,SCREENHEIGHT - self.tabBarController.tabBar.frame.size.height - (IS_GREATER_IOS_7?20+44:44));
     NSLog(@"%f",self.stationTableview.frame.size.height);
+    
+    stationTempArray = [NSMutableArray new];
+    stationListArray = [NSMutableArray new];
 }
 
 - (void)didReceiveMemoryWarning
@@ -51,7 +58,44 @@
     self.tabBarController.tabBar.hidden = NO;
     [self getStationList];
 }
-
+-(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    [self.view endEditing:YES];
+}
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    //    NSLog(@"%@",stationListArray);
+    [stationTempArray removeAllObjects];
+    if ([searchText isEqualToString:@""]) {
+        stationTempArray = [stationListArray mutableCopy];
+        [self.stationTableview reloadData];
+    }else {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF contains[c] %@",searchText];
+        //        [stationTempArray isEqualToArray:[[stationListArray mutableCopy] filteredArrayUsingPredicate:predicate]];
+        //        NSArray *source;
+        //        NSDictionary *abu;
+        //        NSMutableArray *result = [NSMutableArray array];
+        for (NSDictionary *item in stationListArray)
+        {
+            for (NSString *key in [item allKeys])
+            {
+                if ([key isEqualToString:@"gtfs_latitude"] || [key isEqualToString:@"gtfs_longitude"])
+                    continue;
+                
+                NSString *value = item[key];
+                //                if ([value rangeOfString:searchText].location != NSNotFound)
+                if ([predicate evaluateWithObject:value])
+                {
+                    [stationTempArray addObject:item];
+                    break;
+                }
+            }
+        }
+        
+        NSLog(@"。。。。。%@",stationListArray);
+        NSLog(@"%@",stationTempArray);
+        [self.stationTableview reloadData];
+    }
+}
 - (void)getStationList
 {
     NSString *httpUrlString = [NSString stringWithFormat:@"%@%@cmd=%@&key=%@",SERVER_API_ADDRESS,STATION_API,@"stns",API_KEY];
@@ -63,6 +107,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.stationListArray = [[dic objectForKey:@"stations"]objectForKey:@"station"];
                 NSLog(@"station %@",self.stationListArray);
+                stationTempArray = [stationListArray mutableCopy];
                 [self.stationTableview reloadData];
             });
         }
@@ -96,7 +141,7 @@
 #pragma mark - Table view data source
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.stationListArray count];
+    return [self.stationTempArray count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -107,20 +152,22 @@
     if (!cell) {
         cell = [[StationListCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-//    cell.addressLable.text = [NSString stringWithFormat:@"%@, %@", [[self.stationListArray objectAtIndex:indexPath.row]objectForKey:@"address"],[[self.stationListArray objectAtIndex:indexPath.row]objectForKey:@"city"]];
-    cell.addressLable.text = [NSString stringWithFormat:@"%@",[[self.stationListArray objectAtIndex:indexPath.row]objectForKey:@"name"]];
+    //    cell.addressLable.text = [NSString stringWithFormat:@"%@, %@", [[self.stationListArray objectAtIndex:indexPath.row]objectForKey:@"address"],[[self.stationListArray objectAtIndex:indexPath.row]objectForKey:@"city"]];
+    cell.addressLable.text = [NSString stringWithFormat:@"%@",[[stationTempArray objectAtIndex:indexPath.row]objectForKey:@"name"]];
     return cell;
+
 }
 
 #pragma mark - Table view delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.view endEditing:YES];
-    NSLog(@"cell info:%@",[self.stationListArray objectAtIndex:indexPath.row]);
+    NSLog(@"cell info:%@",[stationTempArray objectAtIndex:indexPath.row]);
     StationInfoDetailViewController *detailViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil]instantiateViewControllerWithIdentifier:@"stationDetail"];
-    detailViewController.stationInfomation = [self.stationListArray objectAtIndex:indexPath.row];
-//    [self presentViewController:detailViewController animated:YES completion:nil];
+    detailViewController.stationInfomation = [stationTempArray objectAtIndex:indexPath.row];
+    //    [self presentViewController:detailViewController animated:YES completion:nil];
     
     [self.navigationController pushViewController:detailViewController animated:YES];
+
 }
 @end
